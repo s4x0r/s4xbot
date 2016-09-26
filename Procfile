@@ -1,1 +1,0 @@
-web: python s4xb0t.py
