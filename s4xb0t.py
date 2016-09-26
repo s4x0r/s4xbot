@@ -161,8 +161,8 @@ def on_message(message):
                 if user_potions[message.author] > 0:
                     user_potions[message.author] -=1
                     player_hp +=5
-                    yield from cliend.send_message(message.channel, '``` '+message.author.name+' used a potion. Their hp went up by 5```')
-                    break
+                    yield from client.send_message(message.channel, '``` '+message.author.name+' used a potion. Their hp went up by 5```')
+                    continue
                 elif user_potions[message.author] == 0:
                     yield from client.send_message(message.channel, '```'+message.author.name+' fumbles around in their bag for a potion that isn\'t there')
             else:
