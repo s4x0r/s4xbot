@@ -202,6 +202,6 @@ def on_message(message):
 #       yield from User.mention(message.author)
 #        yield from client.send_message(message.channel, 'Rolled a ' + random.randint(1,100))
 
-client.run('MjE3ODg3MTc2MzA4ODE3OTIw.CqKtyw.rE1SR5NowmGd9UozdXGlJVi03W0')
+client.run('token')
 
 
