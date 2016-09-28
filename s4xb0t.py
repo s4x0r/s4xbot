@@ -11,6 +11,7 @@ client = discord.Client()
 insult1 = ["a Lazy", "a Stupid", " an Insecure", "an Idiotic", "a Slimy", "a Slutty", "a Smelly", "a Pompous", "a Communist", "a Dicknose", "a Pie-eating", "a Racist", "an Elitist", "a White Trash", "a Drug-Loving", "a Butterface", "a Tone Deaf", "an Ugly", "a Creepy"]
 insult2 = ["Douche", "Ass", "Turd", "Rectum", "Butt", "Cock", "Shit", "Crotch", "Bitch", "Prick", "Slut", "Taint", "Fuck", "Dick", "Boner", "Shart", "Nut", "Sphincter" ]
 insult3 = ["Pilot", "Canoe", "Captain", "Pirate", "Hammer", "Knob", "Box", "Jockey", "Nazi", "Waffle", "Goblin", "Blossum", "Biscuit", "Clown", "Socket", "Monster", "Hound", "Dragon", "Balloon"]
+ball = ['It is certain','It is decidedly so','Without a doubt','Yes, definitely','You may rely on it','As I see it, yes','Most likely','Outlook good','Yes','Signs point to yes','Reply hazy try again','Ask again later','Better not tell you now','Cannot predict now','Concentrate and ask again','Don\'t count on it','My reply is no','My sources say no','Outlook not so good','Very doubtful']
 help_msg = ('''\
 !help - Displays this message
 !insult - Generates a random insult
@@ -19,7 +20,8 @@ help_msg = ('''\
 !wtf
 !fresh
 !changelog
-!gold - See how much gold you have
+!inventory - See what you've got
+!8ball - Ask it a question
 
 -Dice-
 !1d#
@@ -79,6 +81,10 @@ def on_message(message):
 
     elif message.content.startswith('!whisper'):
         yield from client.send_message(message.author, 'pssst')
+
+    elif message.content.startswith('!8ball'):
+        j = random.randint(0,11)
+        yield from client.send_message(message.channel, ball[j])
         
     elif message.content.startswith('!insult'):
         j = random.randint(0,18)
@@ -143,8 +149,11 @@ def on_message(message):
                     continue
                 elif user_potions[message.author] == 0:
                     yield from client.send_message(message.channel, '```'+message.author.name+' fumbles around in their bag for a potion that isn\'t there')
+            elif msg.content == 'run':
+                yield from client.send_message(message.channel, '```Got away safely```')
+                break
             else:
-                yield from client.send_message(message.channel, '```Accepted input, attack, potion```')
+                yield from client.send_message(message.channel, '```Accepted input, attack, potion, run```')
 
             if enemy_hp_l <= 0:
                 gold = random.randint(1, 8)
@@ -154,7 +163,7 @@ def on_message(message):
                 else:
                     user_gold[message.author] += gold
                 break
-                
+            
             enemy_dmg = random.randint(1,12)
             player_hp = (player_hp - enemy_dmg)
             yield from client.send_message(message.channel, '```'+message.author.name+' swings, dealing ' + str(player_dmg) + ' damage.\nThe '+enemy[k]+' swings, dealing '+ str(enemy_dmg) +' damage.```')  
