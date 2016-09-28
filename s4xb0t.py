@@ -22,12 +22,8 @@ help_msg = ('''\
 !gold - See how much gold you have
 
 -Dice-
-!d4
-!d6
-!d8
-!d10
-!d12
-!d20
+!1d#
+ex: 1d2, 1d6, 1d20
 ''')
 
 changelog = ('''
@@ -97,28 +93,10 @@ def on_message(message):
         else:
             yield from client.send_message(message.channel, '```Tails!```')
             
-    elif message.content.startswith('!d4'):
-        j = random.randint(1,4)
-        yield from client.send_message(message.channel, '```Rolling a d4\nRolled a ' + str(j) + '```')
-
-    elif message.content.startswith('!d6'):
-        j = random.randint(1,6)
-        yield from client.send_message(message.channel, '```Rolling a d6\nRolled a ' + str(j) + '```')
-
-    elif message.content.startswith('!d8'):
-        j = random.randint(1,8)
-        yield from client.send_message(message.channel, '```Rolling a d8\nRolled a ' + str(j) + '```')
-
-    elif message.content.startswith('!d10'):
-        j = random.randint(1,10)
-        yield from client.send_message(message.channel, '```Rolling a d10\nRolled a ' + str(j) + '```')
-
-    elif message.content.startswith('!d12'):
-        j = random.randint(1,12)
-        yield from client.send_message(message.channel, '```Rolling a d12\nRolled a ' + str(j) + '```')
-    elif message.content.startswith('!d20'):
-        j = random.randint(1,20)
-        yield from client.send_message(message.channel, '```Rolling a d20\nRolled a ' + str(j) + '```')
+    elif message.content.startswith('!1d'):
+		k = int(message.content[3:])
+        j = random.randint(1,k)
+        yield from client.send_message(message.channel, '```Rolling a d'+k+'\nRolled a ' + str(j) + '```')
 
     elif message.content.startswith('!swing'):
         j = random.randint(0,1)
