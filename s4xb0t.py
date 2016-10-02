@@ -8,7 +8,8 @@ import random
 
 client = discord.Client()
 
-insult1 = ["a Lazy", "a Stupid", " an Insecure", "an Idiotic", "a Slimy", "a Slutty", "a Smelly", "a Pompous", "a Communist", "a Dicknose", "a Pie-eating", "a Racist", "an Elitist", "a White Trash", "a Drug-Loving", "a Butterface", "a Tone Deaf", "an Ugly", "a Creepy"]
+
+insult1 = ["a Lazy", "a Stupid", "an Insecure", "an Idiotic", "a Slimy", "a Slutty", "a Smelly", "a Pompous", "a Communist", "a Dicknose", "a Pie-eating", "a Racist", "an Elitist", "a White Trash", "a Drug-Loving", "a Butterface", "a Tone Deaf", "an Ugly", "a Creepy"]
 insult2 = ["Douche", "Ass", "Turd", "Rectum", "Butt", "Cock", "Shit", "Crotch", "Bitch", "Prick", "Slut", "Taint", "Fuck", "Dick", "Boner", "Shart", "Nut", "Sphincter" ]
 insult3 = ["Pilot", "Canoe", "Captain", "Pirate", "Hammer", "Knob", "Box", "Jockey", "Nazi", "Waffle", "Goblin", "Blossum", "Biscuit", "Clown", "Socket", "Monster", "Hound", "Dragon", "Balloon"]
 ball = ['It is certain','It is decidedly so','Without a doubt','Yes, definitely','You may rely on it','As I see it, yes','Most likely','Outlook good','Yes','Signs point to yes','Reply hazy try again','Ask again later','Better not tell you now','Cannot predict now','Concentrate and ask again','Don\'t count on it','My reply is no','My sources say no','Outlook not so good','Very doubtful']
@@ -22,6 +23,9 @@ help_msg = ('''\
 !changelog
 !inventory - See what you've got
 !8ball - Ask it a question
+!give - Give a mentioned user gold
+ex !give @s4x0r 5
+!whisper - psst
 
 -Dice-
 !1d#
@@ -29,11 +33,14 @@ ex: 1d2, 1d6, 1d20
 ''')
 
 changelog = ('''
-v0.1.1a
+v0.1.3a
 -changed !gold to !inventory
--Added shop
--Added whisper
+-Added !shop
+-Added !whisper
 -Added potions
+-Added !8ball
+-Added !give
+-Fixed dice
 -Added bugs
 ''')
 
@@ -56,7 +63,6 @@ def on_message(message):
     if message.content.startswith(''):
 """
  
-
 @client.event
 @asyncio.coroutine
 def on_message(message):
@@ -80,17 +86,25 @@ def on_message(message):
         yield from client.send_message(message.channel, '```Now, this is a story all about how \nMy life got flipped-turned upside down \nAnd I\'d like to take a minute \n Just sit right there \nI\'ll tell you how I became the prince of a town called Bel-Air```')
 
     elif message.content.startswith('!whisper'):
-        yield from client.send_message(message.author, 'pssst')
+        yield from client.send_message(message.author, 'psst')
+
+    elif message.content.startswith('!say'):
+        msg = message.content[5:]
+        yield from client.send_message(message.channel, msg)
 
     elif message.content.startswith('!8ball'):
         j = random.randint(0,11)
         yield from client.send_message(message.channel, ball[j])
         
     elif message.content.startswith('!insult'):
+        name = message.content[8:]
         j = random.randint(0,18)
         k = random.randint(0,17)
         l = random.randint(0,18)
-        yield from client.send_message(message.channel, '```You\'re ' + insult1[j] + ' ' + insult2[k] + ' ' + insult3[l] + '```')
+        if name == None:
+            yield from client.send_message(message.channel, '```You\'re ' + insult1[j] + ' ' + insult2[k] + ' ' + insult3[l] + '```')
+        else:
+            yield from client.send_message(message.channel, '```'+name+' is '+insult1[j]+' '+insult2[k]+' '+insult3[l]+'```')
 
     elif message.content.startswith('!coin'):
         j = random.randint(1,2)
@@ -100,9 +114,9 @@ def on_message(message):
             yield from client.send_message(message.channel, '```Tails!```')
             
     elif message.content.startswith('!1d'):
-		k = int(message.content[3:])
+        k = int(message.content[3:])
         j = random.randint(1,k)
-        yield from client.send_message(message.channel, '```Rolling a d'+k+'\nRolled a ' + str(j) + '```')
+        yield from client.send_message(message.channel, '```Rolling a d'+str(k)+'\nRolled a ' + str(j) + '```')
 
     elif message.content.startswith('!swing'):
         j = random.randint(0,1)
@@ -111,6 +125,27 @@ def on_message(message):
         elif j == 1:
             msg = 'They hit. Cleaving the enemy in two'
         yield from client.send_message(message.channel,'```' +  message.author.name + ' swings their mighty sword\n' +msg+'```')
+
+    elif message.content.startswith('!test'):
+        yield from client.send_message(message.channel,message.mentions[0])
+
+    elif message.content.startswith('!give'):
+        msg = message.content.split(' ')
+        amt = int((len(msg)-1))
+        user_to = message.mentions[0]
+        user_from = message.author
+
+        if user_from not in user_gold:
+            user_gold[user_from] = 0
+        if user_to not in user_gold:
+            user_gold[user_to] = 0
+        
+        if user_gold[user_from] < amt:
+            yield from client.send_message(message.channel, '```You don\'t have enough money```')
+        else:
+            user_gold[user_from]-=amt
+            user_gold[user_to]+=amt
+            yield from client.send_message(message.channel, '```Gave '+str(amt)+' gold```')
 
     elif message.content.startswith('!inventory'):
         if message.author not in user_gold:
@@ -144,7 +179,7 @@ def on_message(message):
                     user_potions[message.author] = 0
                 if user_potions[message.author] > 0:
                     user_potions[message.author] -=1
-                    player_hp +=5
+                    player_hp +=10
                     yield from client.send_message(message.channel, '``` '+message.author.name+' used a potion. Their hp went up by 5```')
                     continue
                 elif user_potions[message.author] == 0:
@@ -184,11 +219,6 @@ def on_message(message):
             user_potions[message.author]+=1
             user_gold[message.author]-=5
             yield from client.send_message(message.channel, '```'+message.author.name+' bought a potion.\nThank you for visiting the shop!```')
-    
-#    elif message.content.startswith('!d100'):
-#       yield from User.mention(message.author)
-#        yield from client.send_message(message.channel, 'Rolled a ' + random.randint(1,100))
 
-client.run('token')
 
 
