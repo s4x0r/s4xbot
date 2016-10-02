@@ -69,6 +69,8 @@ def on_message(message):
 
     if message.author == client.user:
         return
+    elif message.content.startswith('!stop') and message.author.name == 's4x0r':
+        exit()
 
     elif message.content.startswith('!help'):
         yield from client.send_message(message.channel, help_msg)
@@ -220,5 +222,6 @@ def on_message(message):
             user_gold[message.author]-=5
             yield from client.send_message(message.channel, '```'+message.author.name+' bought a potion.\nThank you for visiting the shop!```')
 
+client.run('MjE3ODg3MTc2MzA4ODE3OTIw.CszH5Q.MfNkOLHGNwDAVtR0Y3JyxHNbMBM')
 
 
