@@ -222,6 +222,6 @@ def on_message(message):
             user_gold[message.author]-=5
             yield from client.send_message(message.channel, '```'+message.author.name+' bought a potion.\nThank you for visiting the shop!```')
 
-client.run('MjE3ODg3MTc2MzA4ODE3OTIw.CszH5Q.MfNkOLHGNwDAVtR0Y3JyxHNbMBM')
+client.run('token')
 
 
