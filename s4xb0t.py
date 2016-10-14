@@ -159,9 +159,9 @@ def on_message(message):
 
     elif message.content.startswith('!encounter'):
         k = random.randint(0,3)
-        enemy = ['zombie', 'skeleton', 'enderman', 'endermite']
-        enemy_pic = ['http://vignette1.wikia.nocookie.net/monster/images/b/b6/Minecraft-zombie-4.png','http://vignette2.wikia.nocookie.net/minecraft/images/2/23/Skeleton.png','http://vignette4.wikia.nocookie.net/minecraftstorymode/images/2/28/Enderman.png','http://vignette3.wikia.nocookie.net/minecraft/images/c/cf/Endermite.png']
-        enemy_hp = [15,15, 20, 5]
+        enemy = ['zombie', 'skeleton', 'enderman', 'endermite', 'silverfish', 'husk', 'tiny magma cube', 'skeleton rider', 'stray', 'baby zombie', 'chicken jockey']
+        enemy_pic = ['http://vignette1.wikia.nocookie.net/monster/images/b/b6/Minecraft-zombie-4.png','http://vignette2.wikia.nocookie.net/minecraft/images/2/23/Skeleton.png','http://vignette4.wikia.nocookie.net/minecraftstorymode/images/2/28/Enderman.png','http://vignette3.wikia.nocookie.net/minecraft/images/c/cf/Endermite.png', 'https://hydra-media.cursecdn.com/minecraft.gamepedia.com/b/b9/Silverfish.png', 'https://hydra-media.cursecdn.com/minecraft.gamepedia.com/1/17/HuskCropped.png', 'https://hydra-media.cursecdn.com/minecraft.gamepedia.com/e/ed/Magma_Cube.png', 'http://i.imgur.com/qXHd5De.png', 'https://hydra-media.cursecdn.com/minecraft.gamepedia.com/0/07/Stray.png', 'https://hydra-media.cursecdn.com/minecraft.gamepedia.com/e/e2/Baby_Zombie.PNG', 'https://hydra-media.cursecdn.com/minecraft.gamepedia.com/d/d3/Chicken_Jockey.png']
+        enemy_hp = [15,15, 20, 5, 5, 15, 1, 25, 15, 15, 18]
         enemy_hp_l = int(enemy_hp[k])
         player_hp = 20
         player_dmg = 0
