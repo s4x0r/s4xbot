@@ -1,15 +1,14 @@
 #Link to join a server
 #https://discordapp.com/oauth2/authorize?client_id=217887176308817920&scope=bot&permissions=0
 
-import dungeon
+
 import discord
 import asyncio
 import random
 
-
 client = discord.Client()
 
-directions = {0:'North', 1:'East', 2:'South', 3:'West'}
+
 insult1 = ["a Lazy", "a Stupid", "an Insecure", "an Idiotic", "a Slimy", "a Slutty", "a Smelly", "a Pompous", "a Communist", "a Dicknose", "a Pie-eating", "a Racist", "an Elitist", "a White Trash", "a Drug-Loving", "a Butterface", "a Tone Deaf", "an Ugly", "a Creepy"]
 insult2 = ["Douche", "Ass", "Turd", "Rectum", "Butt", "Cock", "Shit", "Crotch", "Bitch", "Prick", "Slut", "Taint", "Fuck", "Dick", "Boner", "Shart", "Nut", "Sphincter" ]
 insult3 = ["Pilot", "Canoe", "Captain", "Pirate", "Hammer", "Knob", "Box", "Jockey", "Nazi", "Waffle", "Goblin", "Blossum", "Biscuit", "Clown", "Socket", "Monster", "Hound", "Dragon", "Balloon"]
@@ -33,15 +32,6 @@ ex !give @s4x0r 5
 ex: 1d2, 1d6, 1d20
 ''')
 
-#in order direction, length, width, enemies, doors[0], doors[1]
-look_msg = ('''
-You stand in a room
-Stretching to the {0}, it is {1} feet long, and {2} feet wide
-There are {3} enemies here
-There are 2 doors in this room
-{4} {5}
-''')
-
 changelog = ('''
 v0.1.3a
 -changed !gold to !inventory
@@ -54,9 +44,8 @@ v0.1.3a
 -Added bugs
 ''')
 
-user_gold={}
+user_gold = {}
 user_potions={}
-busy_users=[]
 
 
 @client.event
@@ -79,8 +68,6 @@ def on_message(message):
 def on_message(message):
 
     if message.author == client.user:
-        return
-    elif message.author.name in busy_users:
         return
     elif message.content.startswith('!stop') and message.author.name == 's4x0r':
         exit()
@@ -171,7 +158,6 @@ def on_message(message):
         yield from client.send_message(message.channel, '```'+message.author.name+' has '+str(user_gold[message.author])+' gold and '+str(user_potions[message.author])+' potions```')
 
     elif message.content.startswith('!encounter'):
-        busy_users.append(message.author.name)
         k = random.randint(0,3)
         enemy = ['zombie', 'skeleton', 'enderman', 'endermite']
         enemy_pic = ['http://vignette1.wikia.nocookie.net/monster/images/b/b6/Minecraft-zombie-4.png','http://vignette2.wikia.nocookie.net/minecraft/images/2/23/Skeleton.png','http://vignette4.wikia.nocookie.net/minecraftstorymode/images/2/28/Enderman.png','http://vignette3.wikia.nocookie.net/minecraft/images/c/cf/Endermite.png']
@@ -221,14 +207,12 @@ def on_message(message):
         
             if player_hp <= 0:
                 yield from client.send_message(message.channel, '```The '+enemy[k]+' overpowers '+message.author.name+' and they black out```')
-        busy_users.remove(message.author.name)
 
     elif message.content.startswith ('!shop'):
-        busy_users.append(message.author.name)
         if message.author not in user_gold:
             user_gold[message.author] = 0
         if message.author not in user_potions:
-            user_potions[message.author] = 0
+            user_potion[message.author] = 0
         yield from client.send_message(message.channel, '```Welcome to the shop!```\nPotion - 5g')
         msg = yield from client.wait_for_message(author=message.author)
         if msg.content == 'potion' or msg.content == 'Potion':
@@ -237,28 +221,6 @@ def on_message(message):
             user_potions[message.author]+=1
             user_gold[message.author]-=5
             yield from client.send_message(message.channel, '```'+message.author.name+' bought a potion.\nThank you for visiting the shop!```')
-        else:
-            yield from client.send_message(message.channel, '```Thank you for visiting the shop```')
-        busy_users.remove(message.author.name)
-
-    elif message.content.startswith('!dungeon'):
-        busy_users.append(message.author.name)
-        d=dungeon.dungeon()
-        x=0
-        y=0
-
-        c=(str(x)+str(y))
-        di=directions[d.rooms[c].room_direction]
-        le=str(d.rooms[c].length)
-        wi=str(d.rooms[c].width)
-        en=str(d.rooms[c].no_of_enemies)
-        doo=directions[d.rooms[c].doors[0]]
-        r=directions[d.rooms[c].doors[1]]
-        yield from client.send_message(message.channel, look_msg.format(di,le,wi,en,doo,r))
-  
-
-        busy_users.remove(message.author.name)
-        
 
 client.run('MjE3ODg3MTc2MzA4ODE3OTIw.CszH5Q.MfNkOLHGNwDAVtR0Y3JyxHNbMBM')
 
