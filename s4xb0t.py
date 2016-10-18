@@ -305,7 +305,6 @@ def on_message(message):
   
 
         busy_users.remove(message.author.name)
-client.run('token
-        ')
+client.run('token')
 
 
