@@ -24,7 +24,7 @@ help_msg = ('''\
 !inventory - See what you've got
 !8ball - Ask it a question
 !give - Give a mentioned user gold
-ex !give @s4x0r 5
+ex !give 5 @s4x0r
 !whisper - psst
 
 -Dice-
@@ -44,8 +44,8 @@ There are 2 doors in this room
 changelog = ('''
 v0.2.0a
 -Made some commands case-insensitive
--Added Dungeons
--
+-Added Dungeons(wip)
+-Fixed triggering commands while in another command
 -Added bugs
 ''')
 
@@ -73,12 +73,21 @@ def on_message(message):
 @asyncio.coroutine
 def on_message(message):
 
+    if message.author.name == 's4x0r':
+        if message.content.startswith('!stop'):
+            exit()
+        elif message.content.startswith('!clear busy'):
+            busy_users.clear()
+        elif message.content.startswith('!mint'):
+            l=message.content.split(' ')
+            if message.author not in user_gold:
+                user_gold[message.author] = 0
+            user_gold[message.author] += int(l[1])
+
     if message.author == client.user:
         return
     elif message.author.name in busy_users:
         return
-    elif message.content.startswith('!stop') and message.author.name == 's4x0r':
-        exit()
 
     elif message.content.startswith('!help'):
         yield from client.send_message(message.channel, help_msg)
@@ -141,7 +150,7 @@ def on_message(message):
 
     elif message.content.startswith('!give'):
         msg = message.content.split(' ')
-        amt = int((len(msg)-1))
+        amt = int(msg[1])
         user_to = message.mentions[0]
         user_from = message.author
 
@@ -159,7 +168,7 @@ def on_message(message):
 
     elif message.content.startswith('!inventory'):
         if message.author not in user_gold:
-           user_gold[message.author] = 0
+            user_gold[message.author] = 0
         if message.author not in user_potions:
             user_potions[message.author] = 0
 
@@ -236,6 +245,7 @@ def on_message(message):
         busy_users.remove(message.author.name)
 
     elif message.content.startswith('!dungeon') and message.author.name == 's4x0r':
+        player_hp = 20
         monsters=[]
         busy_users.append(message.author.name)
         d=dungeon.dungeon()
@@ -258,9 +268,10 @@ def on_message(message):
         
         while len(monsters) > 0:
             #print there are _ monsters here
-            msg = ('There are '+str(len(monsters))+'enemies here')
+            msg = ('There are '+str(len(monsters))+' monsters here')
             for i in range(len(monsters)):
                 msg += ('\n'+monsters[i].name)
+            msg += ('\n'+message.author.name+' has '+str(player_hp)+' hp')
             yield from client.send_message(message.channel, msg)
             
             #player turn
@@ -270,15 +281,31 @@ def on_message(message):
             if l[0].lower()=='attack' or l[0].lower()=='!attack':
                 j = random.randint(1, 12)
                 monsters[int(l[1])].damage(j)
-                yield from client.send_message(message.channel, mseeage.author.name+' deals '+str(j)+' damage to the '+monsters[int(l[1])].name)
+                if monsters[int(l[1])].hp<=0:
+                    yield from client.send_message(message.channel, 'The '+monsters[int(l[1])].name+' dies')
+                    monsters.pop(int(l[1]))
+                else:
+                    yield from client.send_message(message.channel, message.author.name+' deals '+str(j)+' damage to the '+monsters[int(l[1])].name)
             else:
                 yield from client.send_message(message.channel, l[0])
+                
             #monster turn
+            for i in range(len(monsters)):
+                j = random.randint(0,2)
+                if j == 0:
+                    yield from client.send_message(message.channel, 'The '+monsters[i].name+' shuffles about')
+                elif j == 1:
+                    yield from client.send_message(message.channel, 'The '+monsters[i].name+' swings, but misses')                               
+                elif j == 2:
+                    k = random.randint(1,12)
+                    player_hp -= k
+                    yield from client.send_message(message.channel, 'The '+monsters[i].name+' swing and deals '+str(k)+' damage')
                 #if monster hp = 0, remove
             
   
 
         busy_users.remove(message.author.name)
-client.run('token')
+client.run('token
+        ')
 
 
