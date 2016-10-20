@@ -229,13 +229,16 @@ def on_message(message):
         msg = message.content.split(' ')
         if msg[1].lower() == 'potion':
             j=(int(msg[2])*5)
+            if msg[2] < 0:
+                yield from client.send_message(message.channel, '```You can\'t buy negative potions```')
             if players[message.author].gold < j:
-                yield from client.send_message(message.channel, '```You don\'t have enough gold for that')
+                yield from client.send_message(message.channel, '```You don\'t have enough gold for that```')
             else:
                 players[message.author].gold -=j
                 players[message.author].potions += int(msg[2])
                 yield from client.send_message(message.channel, 'Bought '+msg[2]+' potions for '+str(j)+' gold')
-                                    
+        else:
+            yield from client.send_message(message.channel, '```Invalid order\nTry !buy potion 1```')
     elif message.content.startswith ('!shop'):
         busy_users.append(message.author.name)
         if message.author not in players:
