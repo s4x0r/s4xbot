@@ -229,7 +229,7 @@ def on_message(message):
         msg = message.content.split(' ')
         if msg[1].lower() == 'potion':
             j=(int(msg[2])*5)
-            if msg[2] < 0:
+            if int(msg[2]) < 0:
                 yield from client.send_message(message.channel, '```You can\'t buy negative potions```')
             if players[message.author].gold < j:
                 yield from client.send_message(message.channel, '```You don\'t have enough gold for that```')
