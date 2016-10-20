@@ -15,17 +15,18 @@ insult3 = ["Pilot", "Canoe", "Captain", "Pirate", "Hammer", "Knob", "Box", "Jock
 ball = ['It is certain','It is decidedly so','Without a doubt','Yes, definitely','You may rely on it','As I see it, yes','Most likely','Outlook good','Yes','Signs point to yes','Reply hazy try again','Ask again later','Better not tell you now','Cannot predict now','Concentrate and ask again','Don\'t count on it','My reply is no','My sources say no','Outlook not so good','Very doubtful']
 help_msg = ('''\
 !help - Displays this message
-!insult - Generates a random insult
+!changelog
+!insult person - Generates a random insult
 !coin - Flips a coin
 !encounter - Fight a random monster
 !wtf
 !fresh
-!changelog
 !inventory - See what you've got
 !8ball - Ask it a question
 !give - Give a mentioned user gold
-ex !give 5 @s4x0r
+-ex !give 5 @s4x0r
 !whisper - psst
+!buy potion 5
 
 -Dice-
 !1d#
@@ -42,11 +43,12 @@ There are 2 doors in this room
 ''')
 
 changelog = ('''
-v0.2.0a
--Made some commands case-insensitive
--Added Dungeons(wip)
--Fixed triggering commands while in another command
--Added bugs
+v0.2.1a
+-Dungeons(wip)
+-Rewrote !inventory
+-Fixed giving negative money
+-Added !buy
+-Released bugs back into their natrual habitat
 ''')
 
 players = {}
