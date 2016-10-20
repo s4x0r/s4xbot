@@ -49,6 +49,7 @@ v0.2.0a
 -Added bugs
 ''')
 
+players = {}
 user_gold = {}
 user_potions={}
 busy_users=[]
@@ -80,9 +81,9 @@ def on_message(message):
             busy_users.clear()
         elif message.content.startswith('!mint'):
             l=message.content.split(' ')
-            if message.author not in user_gold:
-                user_gold[message.author] = 0
-            user_gold[message.author] += int(l[1])
+            if message.author not in players:
+                players[message.author].gold = 0
+            players[message.author].gold += int(l[1])
 
     if message.author == client.user:
         return
@@ -151,58 +152,58 @@ def on_message(message):
     elif message.content.startswith('!give'):
         msg = message.content.split(' ')
         amt = int(msg[1])
+        if amt<0:
+            yield from client.send_message(message.channel, 'You can\'t give away money you don\'t own')
+            return
         user_to = message.mentions[0]
         user_from = message.author
 
-        if user_from not in user_gold:
-            user_gold[user_from] = 0
-        if user_to not in user_gold:
-            user_gold[user_to] = 0
+        if user_from not in players:
+            players[user_from] = dungeon.player(message.author.name)
+        if user_to not in players:
+            players[user_to] = dungeon.player(message.mentions[0].name)
         
-        if user_gold[user_from] < amt:
+        if players[user_from].gold < amt:
             yield from client.send_message(message.channel, '```You don\'t have enough money```')
         else:
-            user_gold[user_from]-=amt
-            user_gold[user_to]+=amt
+            players[user_from].gold-=amt
+            players[user_to].gold+=amt
             yield from client.send_message(message.channel, '```Gave '+str(amt)+' gold```')
 
     elif message.content.startswith('!inventory'):
-        if message.author not in user_gold:
-            user_gold[message.author] = 0
-        if message.author not in user_potions:
-            user_potions[message.author] = 0
+        if message.author not in players:
+            players[message.author] = dungeon.player(message.author.name)
 
-        yield from client.send_message(message.channel, '```'+message.author.name+' has '+str(user_gold[message.author])+' gold and '+str(user_potions[message.author])+' potions```')
+        yield from client.send_message(message.channel, players[message.author].inventory())
 
     elif message.content.startswith('!encounter'):
         busy_users.append(message.author.name)
-        k = random.randint(0,10)
-        enemy = ['zombie', 'skeleton', 'enderman', 'endermite', 'silverfish', 'husk', 'tiny magma cube', 'skeleton rider', 'stray', 'baby zombie', 'chicken jockey']
-        enemy_pic = ['http://vignette1.wikia.nocookie.net/monster/images/b/b6/Minecraft-zombie-4.png','http://vignette2.wikia.nocookie.net/minecraft/images/2/23/Skeleton.png','http://vignette4.wikia.nocookie.net/minecraftstorymode/images/2/28/Enderman.png','http://vignette3.wikia.nocookie.net/minecraft/images/c/cf/Endermite.png', 'https://hydra-media.cursecdn.com/minecraft.gamepedia.com/b/b9/Silverfish.png', 'https://hydra-media.cursecdn.com/minecraft.gamepedia.com/1/17/HuskCropped.png', 'https://hydra-media.cursecdn.com/minecraft.gamepedia.com/e/ed/Magma_Cube.png', 'http://i.imgur.com/qXHd5De.png', 'https://hydra-media.cursecdn.com/minecraft.gamepedia.com/0/07/Stray.png', 'https://hydra-media.cursecdn.com/minecraft.gamepedia.com/e/e2/Baby_Zombie.PNG', 'https://hydra-media.cursecdn.com/minecraft.gamepedia.com/d/d3/Chicken_Jockey.png']
-        enemy_hp = [15,15, 20, 5, 5, 15, 1, 25, 15, 15, 18]
-        enemy_hp_l = int(enemy_hp[k])
-        player_hp = 20
+        if message.author not in players:
+            players[message.author] = dungeon.player(message.author.name)
+            
+        m=dungeon.monster()
         player_dmg = 0
         enemy_dmg = 0
-        yield from client.send_message(message.channel, enemy_pic[k]+'\n```A '+enemy[k]+' appears!```')
+        
+        yield from client.send_message(message.channel, m.pic+'\n```A '+m.name+' appears!```')
 
         while enemy_hp_l > 0 and player_hp > 0:
-            yield from client.send_message(message.channel, '```The '+enemy[k]+' has ' + str(enemy_hp_l) + ' hp \n'+message.author.name+' has ' + str(player_hp) + ' hp```')
+            yield from client.send_message(message.channel, '```The '+m.name+' has ' + str(m.hp) + ' hp \n'+message.author.name+' has ' + str(players[message.author].hp) + ' hp```')
             msg = yield from client.wait_for_message(author=message.author)
             if msg.content.lower() == 'attack' or msg.content.lower() == '!attack':
                 player_dmg = random.randint(1,12)
-                enemy_hp_l = (enemy_hp_l - player_dmg)
-                if enemy_hp_l < 0:
-                    enemy_hp_l = 0
+                m.damage(player_dmg)
+                if m.is_dead():
+                    gold = random.randint(1, 8)
+                    yield from client.send_message(message.channel, '```'+message.author.name+' defeats the '+m.name+' and finds '+ str(gold) + ' gold!```')
+                    players[message.author].gold += gold
+                    break
             elif msg.content.lower() == 'potion' or message.content.lower()== '!potion':
-                if message.author not in user_potions:
-                    user_potions[message.author] = 0
-                if user_potions[message.author] > 0:
-                    user_potions[message.author] -=1
-                    player_hp +=10
+                if players[message.author].potions > 0:
+                    players[message.author].use_potion()
                     yield from client.send_message(message.channel, '```'+message.author.name+' used a potion. Their hp went up by 5```')
                     continue
-                elif user_potions[message.author] == 0:
+                elif players[message.author].potions == 0:
                     yield from client.send_message(message.channel, '```'+message.author.name+' fumbles around in their bag for a potion that isn\'t there')
             elif msg.content.lower() == 'run' or msg.content.lower()=='!run':
                 yield from client.send_message(message.channel, '```Got away safely```')
@@ -210,37 +211,41 @@ def on_message(message):
             else:
                 yield from client.send_message(message.channel, '```Accepted input, attack, potion, run```')
 
-            if enemy_hp_l <= 0:
-                gold = random.randint(1, 8)
-                yield from client.send_message(message.channel, '```'+message.author.name+' defeats the '+enemy[k]+' and finds ' + str(gold) + ' gold!```')
-                if message.author not in user_gold:
-                    user_gold[message.author] = gold
-                else:
-                    user_gold[message.author] += gold
-                break
+            
             
             enemy_dmg = random.randint(1,12)
-            player_hp = (player_hp - enemy_dmg)
-            yield from client.send_message(message.channel, '```'+message.author.name+' swings, dealing ' + str(player_dmg) + ' damage.\nThe '+enemy[k]+' swings, dealing '+ str(enemy_dmg) +' damage.```')  
+            players[message.author].damage(enemy_dmg)
+            yield from client.send_message(message.channel, '```'+message.author.name+' swings, dealing ' + str(player_dmg) + ' damage.\nThe '+m.name+' swings, dealing '+ str(enemy_dmg) +' damage.```')  
         
-            if player_hp <= 0:
-                yield from client.send_message(message.channel, '```The '+enemy[k]+' overpowers '+message.author.name+' and they black out```')
+            if players[message.author].is_dead():
+                yield from client.send_message(message.channel, '```The '+m.name+' overpowers '+message.author.name+' and they black out```')
         busy_users.remove(message.author.name)
-        
+
+    elif message.content.startswith('!buy'):
+        if message.author not in players:
+            players[message.author] = player()
+        msg = message.content.split(' ')
+        if msg[1].lower() == 'potion':
+            j=(int(msg[2])*5)
+            if players[message.author].gold < j:
+                yield from client.send_message(message.channel, '```You don\'t have enough gold for that')
+            else:
+                players[message.author].gold -=j
+                players[message.author].potions += int(msg[2])
+                yield from client.send_message(message.channel, 'Bought '+msg[2]+' potions for '+str(j)+' gold')
+                                    
     elif message.content.startswith ('!shop'):
         busy_users.append(message.author.name)
-        if message.author not in user_gold:
-            user_gold[message.author] = 0
-        if message.author not in user_potions:
-            user_potions[message.author] = 0
+        if message.author not in players:
+            players[message.author] = player()
         yield from client.send_message(message.channel, '```Welcome to the shop!```\nPotion - 5g')
         msg = yield from client.wait_for_message(author=message.author)
-        if msg.content.lower() == 'potion':
-            if user_gold[message.author]<5:
+        if msg.content.lower() == 'potion' or msg.content.lower() == '!potion':
+            if players[message.author].gold <5:
                 yield from client.send_message(message.channel, '```You don\'t have enough gold to buy this item\nThank you for visiting the shop!```')
             else:
-                user_potions[message.author]+=1
-                user_gold[message.author]-=5
+                players[message.author].potions+=1
+                players[message.author].gold-=5
                 yield from client.send_message(message.channel, '```'+message.author.name+' bought a potion.\nThank you for visiting the shop!```')
         busy_users.remove(message.author.name)
 

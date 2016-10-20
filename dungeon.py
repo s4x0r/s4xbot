@@ -4,6 +4,8 @@ import asyncio
 player_x=0
 player_y=0
 
+
+
 @asyncio.coroutine
 def create_dungeon():
     dungeon = {}
@@ -111,6 +113,52 @@ class monster:
         self.hp-=i
     def heal(self, i):
         self.hp+=i
+
+    def is_dead(self):
+        if self.hp < 1:
+            return True
+        else:
+            return False
+        
+class player:
+    def __init__(self, name):
+        self.name = name
+        self.max_hp = 20
+        self.hp = 20
+        self.xp = 0
+        self.level = 1
+        self.gold = 0
+        self.potions = 0
+        self.items = []
+
+    inv_msg = ('''
+
+        {}
+Level:{}        XP:{}
+Max HP:{}       HP:{}
+Gold:{}    Potions:{}
+''')
+
+    def inventory(self):
+        return self.inv_msg.format(self.name, self.level, self.xp, self.max_hp, self.hp, self.gold, self.potions)
+
+    def use_potion(self):
+        self.potions-=1
+        self.hp+=5
+
+    def damage(self, j):
+        self.hp-=j
+
+    def is_dead(self):
+        if self.hp < 1:
+            return True
+        else:
+            return False
+        
+
+
+class item():
+    pass
         
         
 
