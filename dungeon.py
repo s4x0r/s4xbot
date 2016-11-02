@@ -135,12 +135,12 @@ class player:
 
         {}
 Level:{}        XP:{}
-Max HP:{}       HP:{}
+HP:{}/{}
 Gold:{}    Potions:{}
 ''')
 
     def inventory(self):
-        return self.inv_msg.format(self.name, self.level, self.xp, self.max_hp, self.hp, self.gold, self.potions)
+        return self.inv_msg.format(self.name, self.level, self.xp, self.hp, self.max_hp, self.gold, self.potions)
 
     def use_potion(self):
         self.potions-=1

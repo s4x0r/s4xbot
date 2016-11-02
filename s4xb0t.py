@@ -189,7 +189,7 @@ def on_message(message):
         
         yield from client.send_message(message.channel, m.pic+'\n```A '+m.name+' appears!```')
 
-        while enemy_hp_l > 0 and player_hp > 0:
+        while m.hp > 0 and players[message.author].hp > 0:
             yield from client.send_message(message.channel, '```The '+m.name+' has ' + str(m.hp) + ' hp \n'+message.author.name+' has ' + str(players[message.author].hp) + ' hp```')
             msg = yield from client.wait_for_message(author=message.author)
             if msg.content.lower() == 'attack' or msg.content.lower() == '!attack':
