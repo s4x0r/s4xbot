@@ -1,6 +1,7 @@
 #Link to join a server
 #https://discordapp.com/oauth2/authorize?client_id=217887176308817920&scope=bot&permissions=0
 
+import config
 import dungeon
 import discord
 import asyncio
@@ -13,24 +14,36 @@ insult1 = ["a Lazy", "a Stupid", "an Insecure", "an Idiotic", "a Slimy", "a Slut
 insult2 = ["Douche", "Ass", "Turd", "Rectum", "Butt", "Cock", "Shit", "Crotch", "Bitch", "Prick", "Slut", "Taint", "Fuck", "Dick", "Boner", "Shart", "Nut", "Sphincter" ]
 insult3 = ["Pilot", "Canoe", "Captain", "Pirate", "Hammer", "Knob", "Box", "Jockey", "Nazi", "Waffle", "Goblin", "Blossum", "Biscuit", "Clown", "Socket", "Monster", "Hound", "Dragon", "Balloon"]
 ball = ['It is certain','It is decidedly so','Without a doubt','Yes, definitely','You may rely on it','As I see it, yes','Most likely','Outlook good','Yes','Signs point to yes','Reply hazy try again','Ask again later','Better not tell you now','Cannot predict now','Concentrate and ask again','Don\'t count on it','My reply is no','My sources say no','Outlook not so good','Very doubtful']
-help_msg = ('''\
-!help - Displays this message
-!changelog
-!insult person - Generates a random insult
-!coin - Flips a coin
-!encounter - Fight a random monster
-!wtf
-!fresh
-!inventory - See what you've got
-!8ball - Ask it a question
-!give - Give a mentioned user gold
--ex !give 5 @s4x0r
-!whisper - psst
-!buy potion 5
+
+help_msg = ('''
+`!help` - Displays this message
+`!changelog`
+`!insult <person>` - Generates a random insult
+`!coin` - Flips a coin
+`!encounter` - Fight a random monster
+`!wtf`
+`!fresh`
+`!inventory` - See what you've got
+`!8ball` - Ask it a question
+`!give <ammount> @user`- Give a mentioned user gold
+`!whisper` - psst
+`!buy <item> <ammount>` -try `!buy list` for a list of things you can buy
 
 -Dice-
-!1d#
-ex: 1d2, 1d6, 1d20
+!dice #d#
+ex: !dice 1d20, !dice 2d10
+''')
+
+mod_help = ('''
+These are commands that only mods of s4xbot can use:
+
+`!mint <ammount>` -Give yourself free gold
+`!clear busy` -Use this if someone seems to be unable to use any commands
+`!stop` -Stops s4xbot
+''')
+
+buy_list = ('''
+Potion - 5g
 ''')
 
 #in order direction, length, width, enemies, doors[0], doors[1]
@@ -45,10 +58,9 @@ There are 2 doors in this room
 changelog = ('''
 v0.2.1a
 -Dungeons(wip)
--Rewrote !inventory
--Fixed giving negative money
--Added !buy
--Released bugs back into their natrual habitat
+-Can now roll multiple dice at once
+-Updated !buy
+-Called an exterminator
 ''')
 
 players = {}
@@ -76,7 +88,7 @@ def on_message(message):
 @asyncio.coroutine
 def on_message(message):
 
-    if message.author.name == 's4x0r':
+    if message.author.name in config.mods:
         if message.content.startswith('!stop'):
             exit()
         elif message.content.startswith('!clear busy'):
@@ -84,7 +96,7 @@ def on_message(message):
         elif message.content.startswith('!mint'):
             l=message.content.split(' ')
             if message.author not in players:
-                players[message.author].gold = 0
+                players[message.author].player(message.author.name)
             players[message.author].gold += int(l[1])
 
     if message.author == client.user:
@@ -94,6 +106,8 @@ def on_message(message):
 
     elif message.content.startswith('!help'):
         yield from client.send_message(message.channel, help_msg)
+        if message.author.name in config.mods:
+            yield from client.send_message(message.author, mod_help)
 
     elif message.content.startswith('!changelog'):
         yield from client.send_message(message.channel, changelog)
@@ -119,14 +133,14 @@ def on_message(message):
         yield from client.send_message(message.channel, ball[j])
         
     elif message.content.startswith('!insult'):
-        name = message.content[8:]
+        msg = message.content.split(' ')
         j = random.randint(0,18)
         k = random.randint(0,17)
         l = random.randint(0,18)
-        if name == None:
+        if len(msg) == 1:
             yield from client.send_message(message.channel, '```You\'re ' + insult1[j] + ' ' + insult2[k] + ' ' + insult3[l] + '```')
         else:
-            yield from client.send_message(message.channel, '```'+name+' is '+insult1[j]+' '+insult2[k]+' '+insult3[l]+'```')
+            yield from client.send_message(message.channel, '```'+msg[1]+' is '+insult1[j]+' '+insult2[k]+' '+insult3[l]+'```')
 
     elif message.content.startswith('!coin'):
         j = random.randint(1,2)
@@ -135,10 +149,17 @@ def on_message(message):
         else:
             yield from client.send_message(message.channel, '```Tails!```')
             
-    elif message.content.startswith('!1d'):
-        k = int(message.content[3:])
-        j = random.randint(1,k)
-        yield from client.send_message(message.channel, '```Rolling a d'+str(k)+'\nRolled a ' + str(j) + '```')
+    elif message.content.startswith('!dice'):
+        k = message.content.split(' ')
+        j = k[1].split('d')
+        amt = int(j[0])
+        die = int(j[1])
+        m = ('Rolling '+j[0]+' d'+j[1])
+        for i in range(amt):
+            l = random.randint(1, die)
+            m += ('\nRolled a '+str(l))
+
+        yield from client.send_message(message.channel, m)
 
     elif message.content.startswith('!swing'):
         j = random.randint(0,1)
@@ -225,34 +246,23 @@ def on_message(message):
 
     elif message.content.startswith('!buy'):
         if message.author not in players:
-            players[message.author] = player()
+            players[message.author] = dungeon.player(message.author.name)
         msg = message.content.split(' ')
-        if msg[1].lower() == 'potion':
-            j=(int(msg[2])*5)
-            if int(msg[2]) < 0:
-                yield from client.send_message(message.channel, '```You can\'t buy negative potions```')
-            if players[message.author].gold < j:
-                yield from client.send_message(message.channel, '```You don\'t have enough gold for that```')
-            else:
-                players[message.author].gold -=j
-                players[message.author].potions += int(msg[2])
-                yield from client.send_message(message.channel, 'Bought '+msg[2]+' potions for '+str(j)+' gold')
+        if len(msg) > 1:
+            if msg[1].lower() == 'list':
+                yield from client.send_message(message.channel, buy_list)
+            elif msg[1].lower() == 'potion':
+                j=(int(msg[2])*5)
+                if int(msg[2]) < 0:
+                    yield from client.send_message(message.channel, '```You can\'t buy negative potions```')
+                if players[message.author].gold < j:
+                    yield from client.send_message(message.channel, '```You don\'t have enough gold for that```')
+                else:
+                    players[message.author].gold -=j
+                    players[message.author].potions += int(msg[2])
+                    yield from client.send_message(message.channel, 'Bought '+msg[2]+' potions for '+str(j)+' gold')
         else:
-            yield from client.send_message(message.channel, '```Invalid order\nTry !buy potion 1```')
-    elif message.content.startswith ('!shop'):
-        busy_users.append(message.author.name)
-        if message.author not in players:
-            players[message.author] = player()
-        yield from client.send_message(message.channel, '```Welcome to the shop!```\nPotion - 5g')
-        msg = yield from client.wait_for_message(author=message.author)
-        if msg.content.lower() == 'potion' or msg.content.lower() == '!potion':
-            if players[message.author].gold <5:
-                yield from client.send_message(message.channel, '```You don\'t have enough gold to buy this item\nThank you for visiting the shop!```')
-            else:
-                players[message.author].potions+=1
-                players[message.author].gold-=5
-                yield from client.send_message(message.channel, '```'+message.author.name+' bought a potion.\nThank you for visiting the shop!```')
-        busy_users.remove(message.author.name)
+            yield from client.send_message(message.channel, '```Invalid order\nTry !buy list```')
 
     elif message.content.startswith('!dungeon') and message.author.name == 's4x0r':
         player_hp = 20
@@ -315,6 +325,6 @@ def on_message(message):
   
 
         busy_users.remove(message.author.name)
-client.run('token')
+client.run(config.token)
 
 
