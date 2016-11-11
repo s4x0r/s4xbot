@@ -1,4 +1,3 @@
-import text
 import random
 import asyncio
 
@@ -81,28 +80,24 @@ class dungeon:
                     self.rooms[c].doors.append(1)
                     self.y+=1
                     self.entrance = 3
-                    
 
 class room:
     def __init__(self):
         self.length = random.randint(6, 20)
         self.width = random.randint(6, 20)
-        self.direction = random.randint(0,3)
+        self.room_direction = random.randint(0,3)
         self.no_of_enemies = random.randint(0,2)
         self.doors=[]
         #self.doors = create_doors()
-        #print('Done')
+        print('Done')
 
     def look(self):
-        direct = text.directions[self.direction]
-        door_1 = text.directions[self.doors[0]]
-        door_2 = text.directions[self.doors[1]]
-        return text.look_msg.format(direct,
-                                        str(self.length),
-                                        str(self.width),
-                                        str(self.no_of_enemies),
-                                        door_1,
-                                        door_2)
+        print('You stand in a room')
+        print('Extending to the '+str(self.room_direction)+', it is '+str(self.length)+' feet long, and '+str(self.width)+' feet wide.')
+        print('There are '+str(self.no_of_enemies)+' enemies here')
+        print('Doors:')
+        for i in doors:
+            print(str(doors[i]))
 
 class monster:
     monster_list=['zombie', 'skeleton', 'enderman', 'endermite', 'silverfish', 'husk', 'tiny magma cube', 'skeleton rider', 'stray', 'baby zombie', 'chicken jockey']
@@ -118,6 +113,7 @@ class monster:
         self.hp-=i
     def heal(self, i):
         self.hp+=i
+
     def is_dead(self):
         if self.hp < 1:
             return True

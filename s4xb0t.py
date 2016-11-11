@@ -2,7 +2,6 @@
 #https://discordapp.com/oauth2/authorize?client_id=217887176308817920&scope=bot&permissions=0
 
 import config
-import text
 import dungeon
 import discord
 import asyncio
@@ -16,6 +15,53 @@ insult2 = ["Douche", "Ass", "Turd", "Rectum", "Butt", "Cock", "Shit", "Crotch", 
 insult3 = ["Pilot", "Canoe", "Captain", "Pirate", "Hammer", "Knob", "Box", "Jockey", "Nazi", "Waffle", "Goblin", "Blossum", "Biscuit", "Clown", "Socket", "Monster", "Hound", "Dragon", "Balloon"]
 ball = ['It is certain','It is decidedly so','Without a doubt','Yes, definitely','You may rely on it','As I see it, yes','Most likely','Outlook good','Yes','Signs point to yes','Reply hazy try again','Ask again later','Better not tell you now','Cannot predict now','Concentrate and ask again','Don\'t count on it','My reply is no','My sources say no','Outlook not so good','Very doubtful']
 
+help_msg = ('''
+`!help` - Displays this message
+`!changelog`
+`!insult <person>` - Generates a random insult
+`!coin` - Flips a coin
+`!encounter` - Fight a random monster
+`!wtf`
+`!fresh`
+`!inventory` - See what you've got
+`!8ball` - Ask it a question
+`!give <ammount> @user`- Give a mentioned user gold
+`!whisper` - psst
+`!buy <item> <ammount>` -try `!buy list` for a list of things you can buy
+
+-Dice-
+!dice #d#
+ex: !dice 1d20, !dice 2d10
+''')
+
+mod_help = ('''
+These are commands that only mods of s4xbot can use:
+
+`!mint <ammount>` -Give yourself free gold
+`!clear busy` -Use this if someone seems to be unable to use any commands
+`!stop` -Stops s4xbot
+''')
+
+buy_list = ('''
+Potion - 5g
+''')
+
+#in order direction, length, width, enemies, doors[0], doors[1]
+look_msg = ('''
+You stand in a room
+Stretching to the {0}, it is {1} feet long, and {2} feet wide
+There are {3} enemies here
+There are 2 doors in this room
+{4} {5}
+''')
+
+changelog = ('''
+v0.2.1a
+-Dungeons(wip)
+-Can now roll multiple dice at once
+-Updated !buy
+-Called an exterminator
+''')
 
 players = {}
 user_gold = {}
@@ -52,7 +98,6 @@ def on_message(message):
             if message.author not in players:
                 players[message.author].player(message.author.name)
             players[message.author].gold += int(l[1])
-            yield from slient.send_message(message.author, 'Minted '+str(l[1])+' gold')
 
     if message.author == client.user:
         return
@@ -60,12 +105,12 @@ def on_message(message):
         return
 
     elif message.content.startswith('!help'):
-        yield from client.send_message(message.channel, text.help_msg)
+        yield from client.send_message(message.channel, help_msg)
         if message.author.name in config.mods:
-            yield from client.send_message(message.author, text.mod_help)
+            yield from client.send_message(message.author, mod_help)
 
     elif message.content.startswith('!changelog'):
-        yield from client.send_message(message.channel, text.changelog)
+        yield from client.send_message(message.channel, changelog)
 
     elif message.content.startswith('s4xb0t, introduce yourself'):
         yield from client.send_message(message.channel, '```Hi everyone! I\'m s4x0r\'s little buddy, s4xb0t. Nice to meet you all```')
@@ -205,7 +250,7 @@ def on_message(message):
         msg = message.content.split(' ')
         if len(msg) > 1:
             if msg[1].lower() == 'list':
-                yield from client.send_message(message.channel, text.buy_list)
+                yield from client.send_message(message.channel, buy_list)
             elif msg[1].lower() == 'potion':
                 j=(int(msg[2])*5)
                 if int(msg[2]) < 0:
@@ -228,7 +273,13 @@ def on_message(message):
         y=0
 
         c=(str(x)+str(y))
-        yield from client.send_message(message.channel, d.rooms[c].look())
+        di=directions[d.rooms[c].room_direction]
+        le=str(d.rooms[c].length)
+        wi=str(d.rooms[c].width)
+        en=str(d.rooms[c].no_of_enemies)
+        doo=directions[d.rooms[c].doors[0]]
+        r=directions[d.rooms[c].doors[1]]
+        yield from client.send_message(message.channel, look_msg.format(di,le,wi,en,doo,r))
 
         if d.rooms[c].no_of_enemies > 0:
             for i in range(d.rooms[c].no_of_enemies):
