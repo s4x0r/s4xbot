@@ -98,11 +98,12 @@ def on_message(message):
         
     elif message.content.startswith('!insult'):
         msg = message.content.split(' ')
+        h = random.randint(0, 2)
         j = random.randint(0,18)
         k = random.randint(0,17)
         l = random.randint(0,18)
         if len(msg) == 1:
-            yield from client.send_message(message.channel, '```You\'re ' + insult1[j] + ' ' + insult2[k] + ' ' + insult3[l] + '```')
+            yield from client.send_message(message.channel, '```'+ text.insult0[h]+ ' ' + text.insult1[j] + ' ' + text.insult2[k] + ' ' + text.insult3[l] + '```')
         else:
             yield from client.send_message(message.channel, '```'+msg[1]+' is '+insult1[j]+' '+insult2[k]+' '+insult3[l]+'```')
 
