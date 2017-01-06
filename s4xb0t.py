@@ -44,15 +44,24 @@ def on_message(message):
 
     if message.author.name in config.mods:
         if message.content.startswith('!stop'):
+            print ('Stopped by '+message.author.name)
             exit()
+        elif message.content.startswith('!show busy'):
+            if len(busy_users)==0:
+                yield from client.send_message(message.author, 'None')
+                return
+            for i in busy_users:
+                m+=busy_users[i]
+            yield from client.send_message(message.author, m)
         elif message.content.startswith('!clear busy'):
             busy_users.clear()
         elif message.content.startswith('!mint'):
             l=message.content.split(' ')
             if message.author not in players:
-                players[message.author].player(message.author.name)
+                players[message.author] = dungeon.player(message.author.name)
             players[message.author].gold += int(l[1])
-            yield from slient.send_message(message.author, 'Minted '+str(l[1])+' gold')
+            yield from client.send_message(message.author, 'Minted '+str(l[1])+' gold')
+            print (message.author.name+' Minted '+str(l[1])+' gold')
 
     if message.author == client.user:
         return
