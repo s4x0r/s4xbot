@@ -159,7 +159,10 @@ Gold:{}    Potions:{}
         else:
             return False
         
-
+    def respawn(self):
+        self.hp = self.max_hp - int(self.max_hp/4)
+        self.gold -=int(random.randint(0, self.gold/4))
+        
 
 class item():
     pass

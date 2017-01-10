@@ -7,6 +7,7 @@ import dungeon
 import discord
 import asyncio
 import random
+from time import gmtime, strftime
 
 client = discord.Client()
 
@@ -44,7 +45,7 @@ def on_message(message):
 
     if message.author.name in config.mods:
         if message.content.startswith('!stop'):
-            print ('Stopped by '+message.author.name)
+            print ((strftime("%Y-%m-%d %H:%M:%S", gmtime()))+' Stopped by '+message.author.name)
             exit()
         elif message.content.startswith('!show busy'):
             if len(busy_users)==0:
@@ -61,7 +62,7 @@ def on_message(message):
                 players[message.author] = dungeon.player(message.author.name)
             players[message.author].gold += int(l[1])
             yield from client.send_message(message.author, 'Minted '+str(l[1])+' gold')
-            print (message.author.name+' Minted '+str(l[1])+' gold')
+            print ((strftime("%Y-%m-%d %H:%M:%S", gmtime()))+' '+message.author.name+' Minted '+str(l[1])+' gold')
 
     if message.author == client.user:
         return
@@ -206,7 +207,10 @@ def on_message(message):
             yield from client.send_message(message.channel, '```'+message.author.name+' swings, dealing ' + str(player_dmg) + ' damage.\nThe '+m.name+' swings, dealing '+ str(enemy_dmg) +' damage.```')  
         
             if players[message.author].is_dead():
-                yield from client.send_message(message.channel, '```The '+m.name+' overpowers '+message.author.name+' and they black out```')
+                yield from client.send_message(message.channel, '```The '+m.name+' overpowers '+message.author.name+' and they black out\nThey wake up some time later missing some health and gold```')
+                players[message.author].respawn()
+                break
+
         busy_users.remove(message.author.name)
 
     elif message.content.startswith('!buy'):
