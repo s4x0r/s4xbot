@@ -209,6 +209,7 @@ def on_message(message):
             if players[message.author].is_dead():
                 yield from client.send_message(message.channel, '```The '+m.name+' overpowers '+message.author.name+' and they black out\nThey wake up some time later missing some health and gold```')
                 players[message.author].respawn()
+                busy_users.remove(message.author.name)
                 break
 
         busy_users.remove(message.author.name)
