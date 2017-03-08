@@ -1,6 +1,7 @@
 import text
 import random
 import asyncio
+import items
 
 player_x=0
 player_y=0
@@ -8,44 +9,6 @@ player_y=0
 
 
 @asyncio.coroutine
-def create_dungeon():
-    dungeon = {}
-    x=0
-    y=0
-    x_max=3
-    y_max=3
-    entrance = 2
-        
-    while x<x_max and y<y_max:
-        c=(str(x)+str(y))
-        print('creating room '+c)
-        dungeon[c]=room()
-        if x == x_max:
-            dungeon[c].doors.append(entrance)
-            dungeon[c].doors.append(1)
-            y+=1
-            entrance = 3
-
-        elif y == y_max:
-            dungeon[c].doors.append(entrance)
-            dungeon[c].doors.append(0)
-            x+=1
-            entrance = 2
-
-        else:
-            j=random.randint(0,1)
-            if j==0:
-                dungeon[c].doors.append(entrance)
-                dungeon[c].doors.append(0)
-                x+=1
-                entrance=2
-            else:
-                dungeon[c].doors.append(entrance)
-                dungeon[c].doors.append(1)
-                y+=1
-                entrance = 3
-        return dungeon
-    
 class dungeon:
     def __init__(self):
         self.rooms = {}
@@ -133,18 +96,24 @@ class player:
         self.level = 1
         self.gold = 0
         self.potions = 0
-        self.items = []
+        self.items = [items.weapons['Fist']]
+        self.equip = items.weapons['Fist']
+        
 
-    inv_msg = ('''
+    inv_msg = ('''```diff
 
         {}
 Level:{}        XP:{}
-HP:{}/{}
++HP:{}/{}
 Gold:{}    Potions:{}
 ''')
 
     def inventory(self):
-        return self.inv_msg.format(self.name, self.level, self.xp, self.hp, self.max_hp, self.gold, self.potions)
+        m = self.inv_msg.format(self.name, self.level, self.xp, self.hp, self.max_hp, self.gold, self.potions)
+        n = '\n-Items:'
+        for i in range(len(self.items)):
+            n += ('\n'+self.items[i].name)
+        return m+n+'```'
 
     def use_potion(self):
         self.potions-=1
@@ -162,10 +131,6 @@ Gold:{}    Potions:{}
     def respawn(self):
         self.hp = self.max_hp - int(self.max_hp/4)
         self.gold -=int(random.randint(0, self.gold/4))
-        
-
-class item():
-    pass
         
         
 

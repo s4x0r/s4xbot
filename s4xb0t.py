@@ -52,7 +52,7 @@ def on_message(message):
                 yield from client.send_message(message.author, 'None')
                 return
             for i in busy_users:
-                m+=busy_users[i]
+                m+=busy_users[i].name
             yield from client.send_message(message.author, m)
         elif message.content.startswith('!clear busy'):
             busy_users.clear()
