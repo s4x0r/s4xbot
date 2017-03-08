@@ -100,7 +100,7 @@ class player:
         self.equip = items.weapons['Fist']
         
 
-    inv_msg = ('''```diff
+    inv_msg = ('''
 
         {}
 Level:{}        XP:{}
@@ -113,7 +113,7 @@ Gold:{}    Potions:{}
         n = '\n-Items:'
         for i in range(len(self.items)):
             n += ('\n'+self.items[i].name)
-        return m+n+'```'
+        return ('```diff'+m+n+'```')
 
     def use_potion(self):
         self.potions-=1
