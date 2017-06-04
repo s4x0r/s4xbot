@@ -11,6 +11,8 @@ help_msg = ('''
 `!give <ammount> @user`- Give a mentioned user gold
 `!whisper` - psst
 `!buy <item> <ammount>` -try `!buy list` for a list of things you can buy
+`!lib` -Madlibs
+`!lib rand` - Generate a random madlib
 
 -Dice-
 !dice #d#
@@ -26,10 +28,8 @@ These are commands that only mods of s4xbot can use:
 ''')
 
 changelog = ('''
-v0.2.1a
--Dungeons(wip)
--Can now roll multiple dice at once
--Updated !buy
+v0.3a
+-added !lib
 -Called an exterminator
 ''')
 

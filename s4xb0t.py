@@ -7,20 +7,17 @@ import dungeon
 import discord
 import asyncio
 import random
+import tools
+import adlibs
 from time import gmtime, strftime
 
 client = discord.Client()
 
 directions = {0:'North', 1:'East', 2:'South', 3:'West'}
-insult1 = ["a Lazy", "a Stupid", "an Insecure", "an Idiotic", "a Slimy", "a Slutty", "a Smelly", "a Pompous", "a Communist", "a Dicknose", "a Pie-eating", "a Racist", "an Elitist", "a White Trash", "a Drug-Loving", "a Butterface", "a Tone Deaf", "an Ugly", "a Creepy"]
-insult2 = ["Douche", "Ass", "Turd", "Rectum", "Butt", "Cock", "Shit", "Crotch", "Bitch", "Prick", "Slut", "Taint", "Fuck", "Dick", "Boner", "Shart", "Nut", "Sphincter" ]
-insult3 = ["Pilot", "Canoe", "Captain", "Pirate", "Hammer", "Knob", "Box", "Jockey", "Nazi", "Waffle", "Goblin", "Blossum", "Biscuit", "Clown", "Socket", "Monster", "Hound", "Dragon", "Balloon"]
 ball = ['It is certain','It is decidedly so','Without a doubt','Yes, definitely','You may rely on it','As I see it, yes','Most likely','Outlook good','Yes','Signs point to yes','Reply hazy try again','Ask again later','Better not tell you now','Cannot predict now','Concentrate and ask again','Don\'t count on it','My reply is no','My sources say no','Outlook not so good','Very doubtful']
 
 
 players = {}
-user_gold = {}
-user_potions={}
 busy_users=[]
 
 
@@ -95,7 +92,30 @@ def on_message(message):
 
     elif message.content.startswith('!8ball'):
         j = random.randint(0,11)
-        yield from client.send_message(message.channel, ball[j])
+        yield from client.send_message(message.channel, text.ball[j])
+
+    elif message.content.startswith('!lib'):
+        if " " not in message.content:
+            d = random.choice(adlibs.adlibs)
+            parts = []
+            yield from client.send_message(message.author, 'This lib has ' + str(len(d.parts))+' parts')
+            for x in d.parts:
+                yield from client.send_message(message.author, 'Enter a '+x)
+                msg = yield from client.wait_for_message(author=message.author)
+
+                parts.append(msg.content)
+
+            yield from client.send_message(message.channel, d.body.format(*parts))
+            return
+        else:
+            j = message.content.split(' ')
+            if j[1] in ['rand', 'random']:
+                m = adlibs.rand()
+                yield from client.send_message(message.channel, m)
+            #elif adlib search
+            else:
+                return
+            
         
     elif message.content.startswith('!insult'):
         msg = message.content.split(' ')
@@ -118,22 +138,9 @@ def on_message(message):
     elif message.content.startswith('!dice'):
         k = message.content.split(' ')
         j = k[1].split('d')
-        amt = int(j[0])
-        die = int(j[1])
-        m = ('Rolling '+j[0]+' d'+j[1])
-        for i in range(amt):
-            l = random.randint(1, die)
-            m += ('\nRolled a '+str(l))
-
-        yield from client.send_message(message.channel, m)
-
-    elif message.content.startswith('!swing'):
-        j = random.randint(0,1)
-        if j == 0:
-            msg = 'They miss, burrying their sword into the ground'
-        elif j == 1:
-            msg = 'They hit. Cleaving the enemy in two'
-        yield from client.send_message(message.channel,'```' +  message.author.name + ' swings their mighty sword\n' +msg+'```')
+        l = int(j[0])
+        m = int(j[1])
+        yield from client.send_message(message.channel, tools.dice(l, m))
 
     elif message.content.startswith('!test'):
         yield from client.send_message(message.channel,message.mentions[0])
