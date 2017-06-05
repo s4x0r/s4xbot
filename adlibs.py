@@ -39,13 +39,13 @@ class adlib:
         return self.body.format(*j)
 
 
-adlibs.append(adlib("Proverbs", ["adjective", "verb"], "A woman`s advice is no {0} thing, but he who won`t {1} it is a fool."))
+adlibs.append(adlib("Proverbs", ["adjective", "verb"], "A woman's advice is no {0} thing, but he who won't {1} it is a fool."))
 adlibs.append(adlib("Proverbs", ["noun", "adjective"], "Absence makes the {0} grow {1} -er."))
-adlibs.append(adlib("Proverbs", ["noun", "verbs", "noun"], "A/An {0} never {1} far from the {2}."))
+adlibs.append(adlib("Proverbs", ["noun", "verbs", "noun"], "A(n) {0} never {1} far from the {2}."))
 adlibs.append(adlib("Proverbs", ["noun", "adjective"], "Anyone can hold the {0} when the sea is {1} ."))
-adlibs.append(adlib("Proverbs", ["noun", "number", "noun"], "A/An {0} in hand is worth {1} in the {2} ."))
-adlibs.append(adlib("Proverbs", ["adjective", "verbs"], "A/An {0} mouth {1} no feet."))
-adlibs.append(adlib("Proverbs", ["adjective", "noun", "adjective", "nouns"], "A/An {0} {1} believes anything, but a {2} {1} gives thought to his {3}."))
+adlibs.append(adlib("Proverbs", ["noun", "number", "noun"], "A(n) {0} in hand is worth {1} in the {2} ."))
+adlibs.append(adlib("Proverbs", ["adjective", "verbs"], "A(n) {0} mouth {1} no feet."))
+adlibs.append(adlib("Proverbs", ["adjective", "noun", "adjective", "nouns"], "A(n)A/An {0} {1} believes anything, but a {2} {1} gives thought to his {3}."))
 adlibs.append(adlib("Proverbs", ["noun", "verbs"], "A {0} in time {1} nine." ))
 adlibs.append(adlib("Einstien", ["adjective", "adjective", "noun", "nouns"], "Any intelligent fool can make things {0} , more {1}, and more violent. It takes a touch of genius -- and a lot of {2} -- to move in the opposite {3}."))
 adlibs.append(adlib("Einstien", ["noun", "adjective"], "Reality is merely a/an {0}, albeit a very {1} one."))

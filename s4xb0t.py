@@ -100,7 +100,7 @@ def on_message(message):
             parts = []
             yield from client.send_message(message.author, 'This lib has ' + str(len(d.parts))+' parts')
             for x in d.parts:
-                yield from client.send_message(message.author, 'Enter a '+x)
+                yield from client.send_message(message.author, 'Enter a(n) '+x)
                 msg = yield from client.wait_for_message(author=message.author)
 
                 parts.append(msg.content)
@@ -126,7 +126,7 @@ def on_message(message):
         if len(msg) == 1:
             yield from client.send_message(message.channel, '```'+ text.insult0[h]+ ' ' + text.insult1[j] + ' ' + text.insult2[k] + ' ' + text.insult3[l] + '```')
         else:
-            yield from client.send_message(message.channel, '```'+msg[1]+' is '+insult1[j]+' '+insult2[k]+' '+insult3[l]+'```')
+            yield from client.send_message(message.channel, '```'+msg[1]+' is '+text.insult1[j]+' '+text.insult2[k]+' '+text.insult3[l]+'```')
 
     elif message.content.startswith('!coin'):
         j = random.randint(1,2)
