@@ -138,18 +138,18 @@ def on_message(message):
             user_to = message.mentions[0]
              
             #p1 input
-            client.send_message(message.author, 'Pick Rock, Paper, or Scissors')
-            msg = yield from client.wait_for_message(author=message.author)
+            yield from client.send_message(user_from, 'Pick Rock, Paper, or Scissors')
+            msg = yield from client.wait_for_message(author=user_from)
             while msg.content.lower() not in rpsdict.keys():
-                client.send_message(message.author, 'Invalid choice\nPick Rock, Paper, or Scissors')
-                msg = yield from client.wait_for_message(author=message.author)
+                yield from client.send_message(message.author, 'Invalid choice\nPick Rock, Paper, or Scissors')
+                msg = yield from client.wait_for_message(author=user_from)
             user_from_in = rpsdict[msg.content.lower()]
 
             #p2 input
-            client.send_message(user_to, user_from.name+' has challenged you to RPS!\nPick Rock, Paper, or Scissors')
+            yield from client.send_message(user_to, user_from.name+' has challenged you to RPS!\nPick Rock, Paper, or Scissors')
             msg = yield from client.wait_for_message(author=user_to)
             while msg.content.lower() not in rpsdict.keys():
-                client.send_message(user_to, 'Invalid choice\nPick Rock, Paper, or Scissors')
+                yield from client.send_message(user_to, 'Invalid choice\nPick Rock, Paper, or Scissors')
                 msg = yield from client.wait_for_message(author=user_to)
             user_to_in = rpsdict[msg.content.lower()]
 
