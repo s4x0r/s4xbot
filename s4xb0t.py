@@ -160,7 +160,7 @@ def on_message(message):
         if g == 0:
             #draw
             m+='\nIt\'s a draw!'
-        elif g == -2 or g == -1:
+        elif g == -2 or g == 1:
             #p1 win
             m+=('\n'+user_from.name+' wins!')
         elif g == -1 or g == 2:
