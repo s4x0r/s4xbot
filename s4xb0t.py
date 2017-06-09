@@ -115,7 +115,63 @@ def on_message(message):
             #elif adlib search
             else:
                 return
+
             
+    elif message.content.startswith('!rps'):
+        rpsmsg = '{0} threw {1}\n{2} threw {3}'
+        accept=['rock', 'paper', 'scissors']
+        rpsdict = {'rock':0, 'r':0, 'paper':1, 'p':1, 'scissors':2, 's':2}
+        user_from = message.author
+        
+        if ' ' not in message.content:
+            user_to=client.user
+            yield from client.send_message(user_from, 'Pick Rock, Paper, or Scissors')
+            msg = yield from client.wait_for_message(author=user_from)
+            while msg.content.lower() not in rpsdict.keys():
+                client.send_message(message.author, 'Invalid choice\nPick Rock, Paper, or Scissors')
+                msg = yield from client.wait_for_message(author=user_from)
+            user_from_in = rpsdict[msg.content.lower()]
+            i = random.choice(accept)
+            user_to_in = rpsdict[i]
+
+        else:
+            user_to = message.mentions[0]
+             
+            #p1 input
+            client.send_message(message.author, 'Pick Rock, Paper, or Scissors')
+            msg = yield from client.wait_for_message(author=message.author)
+            while msg.content.lower() not in rpsdict.keys():
+                client.send_message(message.author, 'Invalid choice\nPick Rock, Paper, or Scissors')
+                msg = yield from client.wait_for_message(author=message.author)
+            user_from_in = rpsdict[msg.content.lower()]
+
+            #p2 input
+            client.send_message(user_to, user_from.name+' has challenged you to RPS!\nPick Rock, Paper, or Scissors')
+            msg = yield from client.wait_for_message(author=user_to)
+            while msg.content.lower() not in rpsdict.keys():
+                client.send_message(user_to, 'Invalid choice\nPick Rock, Paper, or Scissors')
+                msg = yield from client.wait_for_message(author=user_to)
+            user_to_in = rpsdict[msg.content.lower()]
+
+        #results 
+        g= user_from_in - user_to_in
+        m = rpsmsg.format(user_from.name, accept[user_from_in], user_to.name, accept[user_to_in])
+
+        if g == 0:
+            #draw
+            m+='\nIt\'s a draw!'
+        elif g == -2 or g == -1:
+            #p1 win
+            m+=('\n'+user_from.name+' wins!')
+        elif g == -1 or g == 2:
+            #p2 win
+            m+=('\n'+user_to.name+' wins!')
+        else:
+            #error
+            pass
+
+        yield from client.send_message(message.channel, m)
+        
         
     elif message.content.startswith('!insult'):
         msg = message.content.split(' ')

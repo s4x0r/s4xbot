@@ -13,6 +13,7 @@ help_msg = ('''
 `!buy <item> <ammount>` -try `!buy list` for a list of things you can buy
 `!lib` -Madlibs
 `!lib rand` - Generate a random madlib
+`!rps` - Rock, paper, scissors. Try `!rps @user` to challenge someone
 
 -Dice-
 !dice #d#
@@ -28,8 +29,9 @@ These are commands that only mods of s4xbot can use:
 ''')
 
 changelog = ('''
-v0.3a
+v0.3.1a
 -added !lib
+-added !rps
 -Called an exterminator
 ''')
 
