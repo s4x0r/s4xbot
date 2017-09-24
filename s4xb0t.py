@@ -8,7 +8,7 @@ import discord
 import asyncio
 import random
 import tools
-import adlibs
+import wordgame
 from time import gmtime, strftime
 
 client = discord.Client()
@@ -96,7 +96,7 @@ def on_message(message):
 
     elif message.content.startswith('!lib'):
         if " " not in message.content:
-            d = random.choice(adlibs.adlibs)
+            d = wordgame.rand()
             parts = []
             yield from client.send_message(message.author, 'This lib has ' + str(len(d.parts))+' parts')
             for x in d.parts:
@@ -109,10 +109,33 @@ def on_message(message):
             return
         else:
             j = message.content.split(' ')
-            if j[1] in ['rand', 'random']:
-                m = adlibs.rand()
+            if j[1].lower() in 'random':
+                m = wordgame.gen()
                 yield from client.send_message(message.channel, m)
+                
             #elif adlib search
+            elif j[1].lower() in 'search':
+                l=[]
+                l = wordgame.search(j[2])
+                yield from client.send_message(message.channel, "Search returned "+str(len(l))+" results \nPick: 1-"+str(len(l)))
+                msg = yield from client.wait_for_message(author=message.author)
+                if int(msg.content)-1 not in range(len(l)):
+                    yield from client.send_message(message.channel, "Invalid choice")
+                    return
+                else:
+                    d = l[int(msg.content)-1]
+                    parts = []
+                    yield from client.send_message(message.author, 'This lib has ' + str(len(d.parts))+' parts')
+
+                    for x in d.parts:
+                        yield from client.send_message(message.author, 'Enter a(n) '+x)
+                        msg = yield from client.wait_for_message(author=message.author)
+
+                        parts.append(msg.content)
+
+                    yield from client.send_message(message.channel, d.body.format(*parts))
+                    return
+                
             else:
                 return
 
@@ -174,16 +197,8 @@ def on_message(message):
         
         
     elif message.content.startswith('!insult'):
-        msg = message.content.split(' ')
-        h = random.randint(0, 2)
-        j = random.randint(0,18)
-        k = random.randint(0,17)
-        l = random.randint(0,18)
-        if len(msg) == 1:
-            yield from client.send_message(message.channel, '```'+ text.insult0[h]+ ' ' + text.insult1[j] + ' ' + text.insult2[k] + ' ' + text.insult3[l] + '```')
-        else:
-            yield from client.send_message(message.channel, '```'+msg[1]+' is '+text.insult1[j]+' '+text.insult2[k]+' '+text.insult3[l]+'```')
-
+        yield from client.send_message(wordgame.insult())
+        
     elif message.content.startswith('!coin'):
         j = random.randint(1,2)
         if j == 1:
