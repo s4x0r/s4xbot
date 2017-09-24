@@ -30,8 +30,7 @@ def rand():
     
 
 def insult():
-    #r = random.randint(1, 3)
-    r=2
+    r = random.randint(1, 3)
     if r == 1:
         m=[]
         m.append(random.choice(wordlist.wlist['insult0']))
