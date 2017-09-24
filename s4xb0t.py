@@ -197,7 +197,7 @@ def on_message(message):
         
         
     elif message.content.startswith('!insult'):
-        yield from client.send_message(wordgame.insult())
+        yield from client.send_message(message.channel, wordgame.insult())
         
     elif message.content.startswith('!coin'):
         j = random.randint(1,2)
