@@ -27,7 +27,9 @@ def gen():
 def rand():
     d=random.choice(libs.adlibs)
     return adlib(*d)
-    
+
+def cute(j, k):
+    return (str(j)+ ' is ' + random.choice(wordlist.wlist[k]))
 
 def insult():
     r = random.randint(1, 3)
