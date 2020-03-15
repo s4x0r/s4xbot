@@ -14,7 +14,6 @@ from time import localtime, strftime
 import sys
 
 #custom api
-import discutil
 import tools
 import wordgame
 import commands
@@ -22,6 +21,11 @@ import clientcommands
 import text
 
 #lists and dicts
+
+global localchannel
+global localdict
+global authinfo
+global mods
 
 localchannel = None
 msgs=[]
@@ -44,11 +48,11 @@ authinfo={
 	'redd_id':'reddit bot id',
 	'redd_pass':'reddit password',
 	'redd_secret':'reddit bot secret',
-	'redd_agent':'description of reddit bot',
+	'redd_agent':'reddit bot name',
 	'redd_name':'reddit username'
 }
 
-reddit = praw.Reddit(client_id=authinfo['redd_id'], client_secret=authinfo['redd_secret'], password=authinfo['redd_pass'],user_agent=authinfo['redd_agent'], username=authinfo['redd_name'])
+reddit = praw.Reddit(client_id=authinfo['redd_id'], client_secret=authinfo['redd_secret'], password=authinfo['redd_pass'], user_agent=authinfo['redd_agent'], username=authinfo['redd_name'])
 client = discord.Client()
 inflector = inflect.engine()
 booru = Danbooru('danbooru')
@@ -169,7 +173,7 @@ def load(file): #string
 	
 async def stop():
 	printlog('stopping')
-	saveall()
+	await saveall()
 	try:
 		await say(localchannel, 'stopping')
 	except:
@@ -196,12 +200,15 @@ async def on_member_join(member):
 @client.event
 async def on_ready():
 	global localchannel
+	localchannel = client.get_channel(localdict['localchannel'])
 	print('Logged in as')
 	print('discord: '+ client.user.name + ' ' + str(client.user.id))
 	print('reddit: '+ str(reddit.user.me()))
+	print('localchannel @ '+str(localchannel))
 	print((strftime("%Y-%m-%d %H:%M:%S", localtime())))
 	print('------')
-	localchannel = client.get_channel(localdict['localchannel'])
+	
+
 
 @client.event
 async def on_message(message):
@@ -300,8 +307,9 @@ if not os.path.isfile('mods.json'):
 else:
 	mods = load('mods.json')
 
+reddit = praw.Reddit(client_id=authinfo['redd_id'], client_secret=authinfo['redd_secret'], password=authinfo['redd_pass'], user_agent=authinfo['redd_agent'], username=authinfo['redd_name'])
 
-if authinfo['disc_token'] == 'token':
+if authinfo['disc_token'] == 'discord bot token':
 	print('Error: Authinfo set to default values. Please edit authinfo.json and reload')
 else:
 	client.run(authinfo['disc_token'])
