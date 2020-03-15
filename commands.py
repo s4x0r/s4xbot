@@ -6,21 +6,26 @@ waitcommands={
     'insult':'say(message.channel, wordgame.insult())',
     'dice':'say(message.channel, tools.dice(command[1]))',
 	'r':'say(message.channel, tools.dice(command[1]))',
-    'purge':'purge()',
     'say':'saythis(message)',
 	'coin':'say(message.channel, random.choice(["Heads","Tails"]))',
 	'fresh':'say(message.channel, "Now, this is a story all about how My life got flipped-turned upside down And I\'d like to take a minute Just sit right there I\'ll tell you how I became the prince of a town called Bel-Air")',
 	'nou':'say(message.channel, ("no u: "+str(localdict["nou"])))',
 	'gay':'say(message.channel, str(localdict["gay"]))',
-	'lib':'say(message.channel, wordgame.gen())'
+	'lib':'say(message.channel, wordgame.gen())',
+	'getid':'say(message.channel, message.author.id)'
     }
 
 notwaitcommands={
 	'autoreply':'commands.autoreply[message.author.name]=message.content[10:]',
-	'stop':'exit()',
 	'setflavor':'setflavor(message.content[11:])',
-	'localchannel':'savetodict("channel", message.channel)'
+	'localchannel':'setlocalchannel(message.channel)'
     }
+	
+modcommands={
+	'stop':'stop()',
+	'mod':'mod(command[1])',
+	'save':'saveall()'
+	}
 
 nametriggers={
     '1The Love Box':':pomfthicc:544378144019316738',

@@ -1,0 +1,5 @@
+discord.py==1.3.1
+praw==6.5.1
+Pybooru==4.1.0
+emoji==0.5.4
+inflect>=4.1.0
