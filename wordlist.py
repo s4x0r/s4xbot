@@ -27,5 +27,29 @@ wlist={
 "shinsult3":["apple-john", "baggage", "barnacle", "bladder", "boar-pig", "bugbear", "bum-bailey", "canker-blossom", "clack-dish", "clotpole", "coxcomb", "codpiece", "death-token", "dewberry", "flap-dragon", "flax-wench", "flirt-gill", "foot-licker", "fustilarian", "giglet", "gudgeon", "haggard", "harpy", "hedge-pie", "horn-beast", "hugger-mugger", "joithead", "lewdster", "lout", "maggot-pie", "malt-worm", "mammet", "measle", "minnow", "miscreant", "moldwarp", "mumble-news", "nut-hook", "pigeon-egg", "pignut", "puttock", "pumpion", "ratsbane", "scut", "skainsmate", "strumpet", "varlot", "vassal", "whey-face", "wagtail"],
 
 "cute":["||so cute||","||very nice||","||beautiful||","||awesome||","||really cool||","||a pure soul||","||heavenly||","||angelic||","||the kindest||","||pretty||","||funny||","||amazing||","||blessed||","||based||","||wholesome||","||neat||","||lovely||", "||more loved than icecream||"],
-"anticute":["||evil||","||mean||","||hateful||","||loathsome||","||undeserving of love||","||going to hell||","||satan||","||a piece of shit||","||repulsive||","||ugly||","||a bad programmer||","||boring||","||bitchy||","||not qt||","||rude||","||a slob||","||repugnant||", "||as bland as unflavored icecream||"]
+"anticute":["||evil||","||mean||","||hateful||","||loathsome||","||undeserving of love||","||going to hell||","||satan||","||a piece of shit||","||repulsive||","||ugly||","||a bad programmer||","||boring||","||bitchy||","||not qt||","||rude||","||a slob||","||repugnant||", "||as bland as unflavored icecream||"],
+
+"haiku0":["Enchanting", "Amazing", "Colorful", "Delightful", "Delicate"],
+"haiku1":["visions", "distance", "conscience", "process", "chaos"],
+"haiku2":["superstitious", "contrasting", "graceful", "inviting", "contradicting", "overwhelming"],
+"haiku3":["true", "dark", "cold", "warm", "great"],
+"haiku4":["scenery","season", "colors","lights","Spring","Winter","Summer","Autumn"],
+"haiku5":["undeniable", "beautiful", "irreplaceable", "unbelievable", "irrevocable"],
+"haiku6":["inspiration", "imagination", "wisdom", "thoughts"],
+
+"8ball":['It is certain','It is decidedly so','Without a doubt','Yes, definitely','You may rely on it','As I see it, yes','Most likely','Outlook good','Yes','Signs point to yes','Reply hazy try again','Ask again later','Better not tell you now','Cannot predict now','Concentrate and ask again','Don\'t count on it','My reply is no','My sources say no','Outlook not so good','Very doubtful'],
+
+"dickmsg":'''
+⠄⠄⢀⡋⣡⣴⣶⣶⡀⠄⠄⠙⢿⣿⣿⣿⣿⣿⣴⣿⣿⣿⢃⣤⣄⣀⣥⣿⣿⠄
+⠄⠄⢸⣇⠻⣿⣿⣿⣧⣀⢀⣠⡌⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⠿⣿⣿⣿⠄
+⠄⢀⢸⣿⣷⣤⣤⣤⣬⣙⣛⢿⣿⣿⣿⣿⣿⣿⡿⣿⣿⡍⠄⠄⢀⣤⣄⠉⠋⣰ 
+⠄⣼⣖⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⣿⣿⣿⣿⣿⢇⣿⣿⡷⠶⠶⢿⣿⣿⠇⢀⣤ 
+⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣽⣿⣿⣿⡇⣿⣿⣿⣿⣿⣿⣷⣶⣥⣴⣿⡗ 
+⢀⠈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠄ 
+⢸⣿⣦⣌⣛⣻⣿⣿⣧⠙⠛⠛⡭⠅⠒⠦⠭⣭⡻⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃⠄ 
+⠘⣿⣿⣿⣿⣿⣿⣿⣿⡆⠄⠄⠄⠄⠄⠄⠄⠄⠹⠈⢋⣽⣿⣿⣿⣿⣵⣾⠃⠄ 
+⠄⠘⣿⣿⣿⣿⣿⣿⣿⣿⠄⣴⣿⣶⣄⠄⣴⣶⠄⢀⣾⣿⣿⣿⣿⣿⣿⠃⠄ 
+⠄⠄⠈⠻⣿⣿⣿⣿⣿⣿⡄⢻⣿⣿⣿⠄⣿⣿⡀⣾⣿⣿⣿⣿⣛⠛⠁⠄⠄ 
+⠄⠄⠄⠄⠈⠛⢿⣿⣿⣿⠁⠞⢿⣿⣿⡄⢿⣿⡇⣸⣿⣿⠿⠛⠁⠄⠄
+'''
 }

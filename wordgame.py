@@ -72,4 +72,12 @@ def searchrand(term):
         if i[0] == term:
             l.append(adlib(*i))
     return random.choice(l)
-    
+
+def haiku():
+	m=[]
+	for i in range(7):
+		m.append(random.choice(wordlist.wlist['haiku'+str(i)]))
+	return "{0} {1}\n{2} {3} {4}\n{5} {6}".format(*m)
+	
+def ball():
+	return random.choice(wordlist.wlist['8ball'])
