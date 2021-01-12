@@ -15,6 +15,9 @@ from time import localtime, strftime
 import sys
 import requests
 import io
+import re
+import mimetypes
+from requests_toolbelt import MultipartEncoder
 
 #custom api
 import tools
@@ -130,9 +133,14 @@ async def postbooru(channel, command):
 		else:
 			pass
 
+def mimetype(name):
+	exl = name.split()
+	ex = exl[len(exl)-1]
+	return mimetypes.types_map[ex]
+
 async def chan_stream(channel, board, thread_id):
 	#name, timestamp, postno, content
-	post_format='**{0}** `{1}` No.`{2}`\n> {3}'
+	title_format='**{}** `{}` No.`{}`\n>'
 	
 	if localdict['stream']==1:
 		await say(channel, 'Already streaming. Stop the other stream before starting a new one')
@@ -146,18 +154,29 @@ async def chan_stream(channel, board, thread_id):
 	while localdict['stream']==1:
 		if not brd.thread_exists(thread_id):
 			localdict['stream']=0
+			channel.send(":no_entry_sign: Thread has been pruned or deleted")
 			return
-		await channel.trigger_typing()
 		new_posts = thread.update()
 		for i in range(new_posts):
 			post = thread.posts[len(thread.posts)-new_posts+i]
-			post_formated = post_format.format(post.name, post.datetime.isoformat(sep=' '), post.post_id, post.text_comment.replace('\n', '\n> '))
+			title_formated = title_format.format(post.name, post.datetime.isoformat(sep=' '), post.post_id)
+			msg = discord.Embed(title=title_formated
+			                    description=post.text_comment)
 			if post.has_file:
-				f = discord.File(io.BytesIO(requests.get(post.file.thumbnail_url).content), post.file.thumbnail_fname)
-				await channel.send(post_formated, file = f)
+				msg.set_image(post.file.thumbnail_url)
+				encoder = MultipartEncoder(fields={
+					"reqtype": "fileupload",
+					"userhash": "",
+					"fileToUpload": (post.file.filename_original,io.BytesIO(requests.get(post.file.file_url).content),getmimetype(post.file.filename_original))
+				})
+				res = requests.post("https://catbox.moe/user/api.php",
+				                  data=encoder,
+				                  headers={"Content-type": encoder.content_type})
+				msg.add_footer(text="Click [here]({}) for the full image".format(res.text))
+				await channel.send(embed=msg)
 			else:
 				await channel.send(post_formated)
-		await asyncio.sleep(15)
+		await asyncio.sleep(5)
 	pass
 
 
